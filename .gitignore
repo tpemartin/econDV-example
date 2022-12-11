@@ -48,3 +48,6 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 .DS_Store
+*/_targets/
+election/majorCityMayor.xls
+*.xls
