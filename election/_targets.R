@@ -1,4 +1,5 @@
 library(targets)
+library(econDV2)
 source("R/electionSupport.R")
 tar_option_set(packages = c("readr", "dplyr", "ggplot2", "econDV2", "magrittr"))
 list(
