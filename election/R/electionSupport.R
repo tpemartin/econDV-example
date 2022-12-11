@@ -70,7 +70,7 @@ getPartyPalettes <- function() {
     無=colorspace::sequential_hcl(n = 6, h = 236, c = c(3, NA, NA), l = c(40, 97), power = 1, rev = TRUE, register = "nop")
   )
 }
-plotBarChartWithPartyColors <- function(listByParty, palettes, cityMajorWinnersArranged) {
+plotBarChartWithPartyColors <- function(listByParty, palettes, cityMajorWinnersArranged, partyColors) {
   plt = econDV2::Plot()
   plt$ggplot=ggplot(mapping = aes(x=行政區別,y=value, fill=cutValue))
   plt$geom=geom_col(data=listByParty$中國國民黨, width=0.9)
@@ -90,7 +90,7 @@ plotBarChartWithPartyColors <- function(listByParty, palettes, cityMajorWinnersA
       limits = listByParty$民主進步黨$cutValue,
       values = palettes$民進黨[-1]
     ))
-  partyColors = getTaiwanPartyColors()
+  
   plt$geom3 = list(
     ggnewscale::new_scale_fill(),
     geom_col(

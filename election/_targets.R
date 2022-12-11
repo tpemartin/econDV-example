@@ -12,9 +12,10 @@ list(
   cityMajorWinnersArranged %t=% arrangeDataAndCreateCutValue(cityMajorWinners),
   listByParty %t=% splitCityMajorWinners(cityMajorWinnersArranged),
   palettes %t=% getPartyPalettes(),
+  partyColors %t=% getTaiwanPartyColors(),
   
   # plots ----
   pltBar %t=% plotBarChart(cityMajorWinnersArranged),
-  pltBarWithPartyColors %t=% plotBarChartWithPartyColors(listByParty, palettes, cityMajorWinnersArranged),
+  pltBarWithPartyColors %t=% plotBarChartWithPartyColors(listByParty, palettes, cityMajorWinnersArranged, partyColors),
   pltBarFinal %t=% plotMakeup(pltBarWithPartyColors)
 )
