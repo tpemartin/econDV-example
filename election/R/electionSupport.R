@@ -46,7 +46,13 @@ keepOnlyCityMajorWinners <- function(cityMajor) {
   
   listCityMajorWinner |>
     purrr::map_dfr(dplyr::bind_rows) -> cityMajorWinners
-  cityMajorWinners
+  cityMajorWinners |> 
+    dplyr::filter(
+      stringr::str_detect(行政區別, "省", negate = T)
+    ) |> 
+    dplyr::mutate(
+      行政區別=stringr::str_remove(行政區別,"\\s")
+    )
 }
 convertToLongData = function(majorCityMayor2){
   majorCityMayor2 |> 
@@ -132,6 +138,18 @@ plotBarChartWithPartyColors <- function(listByParty, palettes, cityMajorWinnersA
   )
   plt
 }
+mergeWithElectionData = function(sf_taiwan, cityMajorWinnersArranged){
+  sf_taiwan |>
+    dplyr::left_join(
+      cityMajorWinnersArranged, by=c("name"="行政區別")
+    ) -> sf_taiwanChoropleth
+  sf_taiwanChoropleth
+}
+obtainTaiwanSf = function(mp){
+  mp$sf$get_sf_taiwan_simplified() -> taiwanSf
+  taiwanSf$台灣本島$縣市 -> sf_taiwan
+  sf_taiwan
+}
 plotBarChart = function(cityMajorWinnersArranged){
   cityMajorWinnersArranged |>
     ggplot()+geom_col(aes(y=value, x=行政區別, fill=cutValue))+
@@ -139,6 +157,57 @@ plotBarChart = function(cityMajorWinnersArranged){
       limits=cityMajorWinnersArranged$行政區別
     )+
     coord_flip()
+}
+plotChoroplethElection = function(sf_taiwanChoropleth, palettes, partyColors){
+  sf_taiwanChoropleth |>
+    split(sf_taiwanChoropleth$party) -> list_sfTaiwan
+  
+  plt = econDV2::Plot()
+  plt$ggplot=ggplot()
+  plt$geom = geom_sf(
+    data=list_sfTaiwan$中國國民黨,
+    mapping=aes(fill=cutValue)
+  )
+  plt$scale = scale_fill_manual(
+    name="國民黨",
+    limits = levels(list_sfTaiwan$中國國民黨$cutValue),
+    values = palettes$國民黨[-1]
+  )
+  plt$geom2 = list(
+    ggnewscale::new_scale_fill(),
+    geom_sf(
+      data=list_sfTaiwan$民主進步黨,
+      aes(fill=cutValue)),
+    scale_fill_manual(
+      name="民進黨",
+      limits = list_sfTaiwan$民主進步黨$cutValue,
+      values = palettes$民進黨[-1]
+    ))
+  
+  plt$geom3 = list(
+    ggnewscale::new_scale_fill(),
+    geom_sf(
+      data=list_sfTaiwan$台灣民眾黨,
+      aes(fill=cutValue), color=partyColors$台灣民眾黨, linetype="solid"),
+    scale_fill_manual(
+      name="民眾黨",
+      limits = list_sfTaiwan$台灣民眾黨$cutValue,
+      values = palettes$民眾黨[-1]
+    )
+  )
+  plt$geom4 = list(
+    ggnewscale::new_scale_fill(),
+    geom_sf(
+      data=list_sfTaiwan$無黨籍及未經政黨推薦,
+      aes(fill=cutValue)),
+    scale_fill_manual(
+      name="無黨籍",
+      limits = list_sfTaiwan$無黨籍及未經政黨推薦$cutValue,
+      values = palettes$無[-1]
+    )
+  )
+  plt$theme = theme_void()
+  plt
 }
 arrangeDataAndCreateCutValue = function(cityMajorWinners){
   cityMajorWinners |>
@@ -165,7 +234,6 @@ arrangeDataAndCreateCutValue = function(cityMajorWinners){
   
   cityMajorWinners
 }
-
 createCityMajorData <- function(majorCityMayor, minorCityMayor) {
   majorCityMayor |> renameFeatures() -> majorCityMayor
   majorCityMayor |> correctClass() -> majorCityMayor2
