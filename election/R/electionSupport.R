@@ -158,15 +158,27 @@ plotBarChart = function(cityMajorWinnersArranged){
     )+
     coord_flip()
 }
-plotChoroplethElection = function(sf_taiwanChoropleth, palettes, partyColors){
+splitSfData = function(sf_taiwanChoropleth){
   sf_taiwanChoropleth |>
     split(sf_taiwanChoropleth$party) -> list_sfTaiwan
+  list_sfTaiwan |>
+    purrr::map(
+      ~{
+        .x$geometry %<>% sf::st_sfc() 
+        .x
+      }
+    ) -> list_sfTaiwan
+  return(list_sfTaiwan)
+}
+
+
+plotChoroplethElection = function(list_sfTaiwan, palettes, partyColors){
   
   plt = econDV2::Plot()
   plt$ggplot=ggplot()
   plt$geom = geom_sf(
     data=list_sfTaiwan$中國國民黨,
-    mapping=aes(fill=cutValue)
+    mapping=aes(fill=cutValue), color="white"
   )
   plt$scale = scale_fill_manual(
     name="國民黨",
@@ -177,13 +189,12 @@ plotChoroplethElection = function(sf_taiwanChoropleth, palettes, partyColors){
     ggnewscale::new_scale_fill(),
     geom_sf(
       data=list_sfTaiwan$民主進步黨,
-      aes(fill=cutValue)),
+      aes(fill=cutValue), color="white"),
     scale_fill_manual(
       name="民進黨",
       limits = list_sfTaiwan$民主進步黨$cutValue,
       values = palettes$民進黨[-1]
     ))
-  
   plt$geom3 = list(
     ggnewscale::new_scale_fill(),
     geom_sf(
@@ -195,17 +206,19 @@ plotChoroplethElection = function(sf_taiwanChoropleth, palettes, partyColors){
       values = palettes$民眾黨[-1]
     )
   )
+  
   plt$geom4 = list(
     ggnewscale::new_scale_fill(),
     geom_sf(
       data=list_sfTaiwan$無黨籍及未經政黨推薦,
-      aes(fill=cutValue)),
+      aes(fill=cutValue), colour="white"),
     scale_fill_manual(
       name="無黨籍",
       limits = list_sfTaiwan$無黨籍及未經政黨推薦$cutValue,
       values = palettes$無[-1]
     )
   )
+  
   plt$theme = theme_void()
   plt
 }

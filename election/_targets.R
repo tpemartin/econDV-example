@@ -16,10 +16,12 @@ list(
   mp %t=% econDV2::Map(),
   sf_taiwan %t=% obtainTaiwanSf(mp),
   sf_taiwanChoropleth %t=% mergeWithElectionData(sf_taiwan, cityMajorWinnersArranged),
-   
+  list_sfTaiwan %t=% splitSfData(sf_taiwanChoropleth),
+  
   # plots ----
   pltBar %t=% plotBarChart(cityMajorWinnersArranged),
   pltBarWithPartyColors %t=% plotBarChartWithPartyColors(listByParty, palettes, cityMajorWinnersArranged, partyColors),
   pltBarFinal %t=% plotMakeup(pltBarWithPartyColors),
-  plt %t=% plotChoroplethElection(sf_taiwanChoropleth, palettes, partyColors)
+  pltChoropleth %t=% plotChoroplethElection(list_sfTaiwan, palettes, partyColors),
+  pltChoroplethFinal %t=% plotMakeup(pltChoropleth)
 )
