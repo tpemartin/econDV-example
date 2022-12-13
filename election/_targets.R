@@ -17,11 +17,14 @@ list(
   sf_taiwan %t=% obtainTaiwanSf(mp),
   sf_taiwanChoropleth %t=% mergeWithElectionData(sf_taiwan, cityMajorWinnersArranged),
   list_sfTaiwan %t=% splitSfData(sf_taiwanChoropleth),
+  df_label %t=% prepareCityCountyLabelDataFrame(sf_taiwan),
   
   # plots ----
   pltBar %t=% plotBarChart(cityMajorWinnersArranged),
   pltBarWithPartyColors %t=% plotBarChartWithPartyColors(listByParty, palettes, cityMajorWinnersArranged, partyColors),
   pltBarFinal %t=% plotMakeup(pltBarWithPartyColors),
   pltChoropleth %t=% plotChoroplethElection(list_sfTaiwan, palettes, partyColors),
-  pltChoroplethFinal %t=% plotMakeup(pltChoropleth)
+  pltChoroplethFinal %t=% plotMakeup(pltChoropleth),
+  pltChoroplethFinalWithLabels %t=% addCityCountyLabel(pltChoroplethFinal, df_label)
 )
+

@@ -79,12 +79,12 @@ getPartyPalettes <- function() {
 plotBarChartWithPartyColors <- function(listByParty, palettes, cityMajorWinnersArranged, partyColors) {
   plt = econDV2::Plot()
   plt$ggplot=ggplot(mapping = aes(x=行政區別,y=value, fill=cutValue))
-  plt$geom=geom_col(data=listByParty$中國國民黨, width=0.9)
-  plt$scale = scale_fill_manual(
+  plt$geom=list(
+    geom_col(data=listByParty$中國國民黨, width=0.9),
+    scale_fill_manual(
     name="國民黨",
     limits = levels(listByParty$中國國民黨$cutValue),
-    values = palettes$國民黨[-1]
-  )
+    values = palettes$國民黨[-1]))
   
   plt$geom2 = list(
     ggnewscale::new_scale_fill(),
@@ -176,15 +176,15 @@ plotChoroplethElection = function(list_sfTaiwan, palettes, partyColors){
   
   plt = econDV2::Plot()
   plt$ggplot=ggplot()
-  plt$geom = geom_sf(
-    data=list_sfTaiwan$中國國民黨,
-    mapping=aes(fill=cutValue), color="white"
-  )
-  plt$scale = scale_fill_manual(
+  plt$geom = list(
+    geom_sf(
+      data=list_sfTaiwan$中國國民黨,
+      mapping=aes(fill=cutValue), color="white"
+    ),
+    scale_fill_manual(
     name="國民黨",
     limits = levels(list_sfTaiwan$中國國民黨$cutValue),
-    values = palettes$國民黨[-1]
-  )
+    values = palettes$國民黨[-1]))
   plt$geom2 = list(
     ggnewscale::new_scale_fill(),
     geom_sf(
@@ -270,6 +270,30 @@ createCityMajorData <- function(majorCityMayor, minorCityMayor) {
     dplyr::filter(
       valueType=="得票率"
     ) 
+}
+addCityCountyLabel <- function(pltChoroplethFinal, df_label) {
+  pltChoroplethFinal$geom5 = 
+    ggrepel::geom_text_repel(
+      data=df_label,
+      mapping=aes(
+        label=name, x=lat, y=long
+      ),
+      inherit.aes = FALSE
+    )
+  return(pltChoroplethFinal)
+}
+prepareCityCountyLabelDataFrame <- function(sf_taiwan) {
+  sf_taiwan |> sf::st_centroid(of_largest_polygon = T) -> sf_taiwanPoint
+  
+  df_label = data.frame(
+    name=sf_taiwan$name
+  )
+  
+  sf_taiwanPoint |> sf::st_coordinates() -> xyCoord
+  df_label$lat = xyCoord[,1]
+  df_label$long= xyCoord[,2]
+  
+  return(df_label)
 }
 renameFeatures <- function(majorCityMayor) {
   names(majorCityMayor)[seq(3, length(majorCityMayor), by=2)] |>
