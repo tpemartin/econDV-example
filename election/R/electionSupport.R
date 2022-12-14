@@ -19,7 +19,7 @@ plotMakeup <- function(plt) {
     labs(
       title="2022年縣市長選舉獲勝黨派得票率",
       subtitle="除連江縣為兩位國民黨候選人得票率加總,\n其餘縣市均為單一候選人之得票率。",
-      caption="資料來源：中選會選舉及公投資料庫\n(https://db.cec.gov.tw/ElecTable/Election?type=Mayor)"
+      caption="資料來源：中選會選舉及公投資料庫(https://db.cec.gov.tw/ElecTable/Election?type=Mayor)"
     ),
     xlab(NULL),ylab(NULL))
   plt
@@ -93,7 +93,7 @@ plotBarChartWithPartyColors <- function(listByParty, palettes, cityMajorWinnersA
       aes(fill=cutValue), width=0.9),
     scale_fill_manual(
       name="民進黨",
-      limits = levels(listByParty$民主進步黨$cutValue),
+      limits = listByParty$民主進步黨$cutValue,
       values = palettes$民進黨[-1]
     ))
   
@@ -104,7 +104,7 @@ plotBarChartWithPartyColors <- function(listByParty, palettes, cityMajorWinnersA
       aes(fill=cutValue), color=partyColors$台灣民眾黨, linetype="solid", width=0.9),
     scale_fill_manual(
       name="民眾黨",
-      limits = levels(listByParty$台灣民眾黨$cutValue),
+      limits = listByParty$台灣民眾黨$cutValue,
       values = palettes$民眾黨[-1]
     )
   )
@@ -115,7 +115,7 @@ plotBarChartWithPartyColors <- function(listByParty, palettes, cityMajorWinnersA
       aes(fill=cutValue), width=0.9),
     scale_fill_manual(
       name="無黨籍",
-      limits = levels(listByParty$無黨籍及未經政黨推薦$cutValue),
+      limits = listByParty$無黨籍及未經政黨推薦$cutValue,
       values = palettes$無[-1]
     )
   )
@@ -192,7 +192,7 @@ plotChoroplethElection = function(list_sfTaiwan, palettes, partyColors){
       aes(fill=cutValue), color="white"),
     scale_fill_manual(
       name="民進黨",
-      limits = levels(list_sfTaiwan$民主進步黨$cutValue),
+      limits = list_sfTaiwan$民主進步黨$cutValue,
       values = palettes$民進黨[-1]
     ))
   plt$geom3 = list(
@@ -202,7 +202,7 @@ plotChoroplethElection = function(list_sfTaiwan, palettes, partyColors){
       aes(fill=cutValue), color=partyColors$台灣民眾黨, linetype="solid"),
     scale_fill_manual(
       name="民眾黨",
-      limits = levels(list_sfTaiwan$台灣民眾黨$cutValue),
+      limits = list_sfTaiwan$台灣民眾黨$cutValue,
       values = palettes$民眾黨[-1]
     )
   )
@@ -214,7 +214,7 @@ plotChoroplethElection = function(list_sfTaiwan, palettes, partyColors){
       aes(fill=cutValue), colour="white"),
     scale_fill_manual(
       name="無黨籍",
-      limits = levels(list_sfTaiwan$無黨籍及未經政黨推薦$cutValue),
+      limits = list_sfTaiwan$無黨籍及未經政黨推薦$cutValue,
       values = palettes$無[-1]
     )
   )
