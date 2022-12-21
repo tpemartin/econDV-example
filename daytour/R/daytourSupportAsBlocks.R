@@ -1,3 +1,4 @@
+# import sf map data -------
 {
   econDV2::Map() -> mp
   mp$sf$get_sf_taiwan_simplified() -> sf_taiwan
@@ -51,6 +52,7 @@
     ggmap::mutate_geocode(
       address
     ) -> dfLocations
+  
   distanceA2B_driving = 
     ggmap::mapdist(
       from=dfLocations$address[[1]], to=dfLocations$address[[2]], mode="driving"
@@ -154,13 +156,14 @@ pltMap$make()
     stringr::str_replace("photos","png") |>
     stringr::str_replace("HEIC","png") ->
     dfMeta$pngfile
-  dfMeta |>
-    dplyr::select(number) |>
-    dplyr::mutate(picture="") -> dfMeta4Table
 }
 ## Generate 
 {
-  dfMeta4Tabel |>
+  dfMeta4Table <- data.frame(
+   number = 1:5,
+   picture = ""
+  )
+  dfMeta4Table |>
     kableExtra::kable()  |>
     kableExtra::kable_paper(full_width=F) |>
     kableExtra::column_spec(
@@ -173,9 +176,11 @@ pltMap$make()
 
 # table overlay -----
 {
-  library(patchwork)
-
-  table1 <- png::readPNG('table1.png', native = TRUE)
-  pltMap$make() + patchwork::plot_spacer() + 
-    patchwork::inset_element(p = table1, left =0, bottom = 0, right = 0.4, top = 1)
+  patchDaytourMapWithPhotoTable <- function(patchwork, png, readPNG, pltMap, plot_spacer, inset_element) {
+    library(patchwork)
+  
+    table1 <- png::readPNG('table1.png', native = TRUE)
+    pltMap$make() + patchwork::plot_spacer() + 
+      patchwork::inset_element(p = table1, left =0, bottom = 0, right = 0.4, top = 1)
+  }
 }
