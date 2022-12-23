@@ -7,7 +7,8 @@ list(
   sf_dayTour%t=%getDayTourSfData(),
   gpxData %t=% importGPXdata(),
   gpxDataSummary %t=% getGpsDataSummary(gpxData),
-  dfMeta %t=% getDfMetaFromPhotos() |> prepareDf4KableExtra(),
+  dfMeta %t=% getDfMetaFromPhotos(),
+  # dfMeta4Kable %t=% prepareDf4KableExtra(dfMeta),
   flag_finish %t=% prepareDf4KableExtra(dfMeta),
   
   pltMap %t=% plotDaytourOverylayGoogleMap(gpxDataSummary, gpxData),

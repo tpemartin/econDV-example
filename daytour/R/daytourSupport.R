@@ -80,13 +80,22 @@ plotDaytourOverylayGoogleMap = function(gpsDataSummary, gpxData){
   pltMap$theme = theme_void()
   return(pltMap)
 }
-getDfMetaFromPhotos = function(){
+getDfMetaFromPhotos_old = function(){
   list.files("./photos", full.names = T) |>
     econDV2::getMetaDataFromFiles(gpsOnly = T) -> dfMeta
   
   # prepare for ggmap overlay
   names(dfMeta)[c(2,3)] <- c("lat", "lon")
   dfMeta$number = 1:nrow(dfMeta)
+  return(dfMeta)
+}
+getDfMetaFromPhotos = function(){
+  googleDriveUrl = "https://drive.google.com/drive/u/0/folders/1ldcrE5XGgN96qImQ7oYslTQCG2ccohNd"
+  ph = econDV2::Photos(googleDriveUrl)
+  ph$getGPS() -> dfMeta
+  
+  names(dfMeta)[1:2] <- c("lat","lon")
+  dfMeta$number = nrow(dfMeta):1
   return(dfMeta)
 }
 addPhotoPointLayer = function(dfMeta, pltMap){
@@ -107,18 +116,18 @@ addPhotoPointLayer = function(dfMeta, pltMap){
 }
 prepareDf4KableExtra = function(dfMeta){
   
-  stringr::str_extract(
-    dfMeta$filename, "\\.[^\\.]+(\\.HEIC)"
-  ) |>
+  dfMeta$filename |>
     stringr::str_replace("photos","png") |>
     stringr::str_replace("HEIC","png") ->
     dfMeta$pngfile
+  
+  file.path("./png",dfMeta$pngfile) -> dfMeta$pngfile
   
   return(dfMeta)
 }
 prepareExtraTable <- function(dfMeta) {
   dfMeta4Table <- data.frame(
-    number = 1:5,
+    number = 5:1,
     picture = ""
   )
   dfMeta4Table |>

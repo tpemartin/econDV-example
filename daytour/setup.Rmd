@@ -1,0 +1,21 @@
+---
+title: "Photo meta overlay GGMaps"
+output: html_notebook
+---
+
+Simple feature data have a big size. For background function, a raster format of Map (i.e. image file) is enough and consume less hardware resource -- but loosing potential of zoom in details. This types of map is called **tile maps** (圖磚).
+
+### 前置作業
+
+#### 1. [建立Google Clound專案及設定Maps API使用](https://developers.google.com/maps/documentation/javascript/cloud-setup)
+  
+#### 2. [安裝Exiftool](https://exiftool.org).  
+升級**econDV2**套件（新版增加`econDV2::getMetaDataFromFiles()`以讀取相片詳細資訊)
+  
+#### 3. 安裝GPX tracker APP
+iOS: 安裝Open GPX tracker. Android: 安裝AAT (haven't tried yet)
+    
+#### 4. 安裝套件
+png, patchwork, kableExtra, webshot. 接著執行`webshot::install_phantomjs()`安裝phamtonjs.
+  
+
